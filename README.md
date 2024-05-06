@@ -53,7 +53,7 @@ To get started as quickly as possible, follow the instructions in this section. 
 
 ### Dependencies  
 Make sure you have the following dependencies installed before proceeding:  
-- Python 3.7+ distribution
+- Python 3.8+ distribution
 - pip >= 21.3.1 
 
 ### Virtualenv  
@@ -62,7 +62,7 @@ You can create and activate virtual environment like below:
 
 pip install --upgrade virtualenv
 
-virtualenv -p python3.7 <venvname>  
+virtualenv -p python3.8 <venvname>  
 
 source <venvname>/bin/activate  
 
