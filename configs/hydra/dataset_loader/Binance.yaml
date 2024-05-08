@@ -3,7 +3,7 @@ defaults:
   - common
 
 name: 'Binance'
-dataset_path: ..\data\binance-data\data\spot\monthly\klines
+dataset_path: C:\Forbole\CryptoPredictions\data\binance-data\data\spot\monthly\klines
 crypto_symbols: 
   - "ETHUSDT" 
   

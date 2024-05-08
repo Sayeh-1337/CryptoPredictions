@@ -83,21 +83,21 @@ def create_dataset(dataset, dates, look_back, features):
     last_col.append('prediction')
     last_col.remove(f'High_day{counter_date-1}')
     last_col.remove(f'Low_day{counter_date - 1}')
-    last_col.remove(f'mean_day{counter_date - 1}')
+    last_col.remove(f'Mean_day{counter_date - 1}')
     profit_calculator = data_frame.copy()[['Date',f'Low_day{counter_date-1}', f'High_day{counter_date-1}',
-                                       f'close_day{counter_date-1}', f'open_day{counter_date-1}',
-                                       f'volume_day{counter_date-1}']]
+                                       f'Close_day{counter_date-1}', f'Open_day{counter_date-1}',
+                                       f'Volume_day{counter_date-1}']]
     data_frame.drop(last_col, axis=1, inplace=True)
     data_frame = data_frame.rename({f'High_day{counter_date-1}': 'predicted_high',
                        f'Low_day{counter_date-1}': 'predicted_low',
-                       f'mean_day{counter_date-1}': 'prediction'
+                       f'Mean_day{counter_date-1}': 'prediction'
                        }, axis=1)
 
     profit_calculator = profit_calculator.rename({f'High_day{counter_date - 1}': 'High',
                                     f'Low_day{counter_date - 1}': 'Low',
-                                    f'open_day{counter_date - 1}': 'Open',
-                                    f'close_day{counter_date - 1}': 'Close',
-                                    f'volume_day{counter_date - 1}': 'Volume',
+                                    f'Open_day{counter_date - 1}': 'Open',
+                                    f'Close_day{counter_date - 1}': 'Close',
+                                    f'Volume_day{counter_date - 1}': 'Volume',
                                     }, axis=1)
 
     return data_frame, profit_calculator

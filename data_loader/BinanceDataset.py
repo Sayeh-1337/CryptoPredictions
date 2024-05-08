@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from .creator import create_dataset
+from zipfile import ZipFile
 
 logger = logging.getLogger(__name__)
 
@@ -17,21 +18,24 @@ class BinanceDataset:
         self.coins = args.crypto_symbols#["ADAUSDT", "ALGOUSDT", "ARBUSDT", "AVAXUSDT", "BNBUSDT", "BTCUSDT", "DOGEUSDT", "ETHUSDT", "FILUSDT", "LTCUSDT", "MATICUSDT", "SOLUSDT", "XLMUSDT"]
 
         dataframes = []
+        # Define the expected columns explicitly
+        expected_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
         for coin in self.coins:
             coin_folder_path = os.path.join(self.folder_path, coin, "30m")
             for file_name in os.listdir(coin_folder_path):
                 if file_name.endswith(".zip"):
-                    csv_file_name = os.path.splitext(file_name)[0]
-                    csv_file_path = os.path.join(coin_folder_path, csv_file_name)
-                    df = pd.read_csv(csv_file_path)
-                    df = df.iloc[:, :6]  # Extracting the first six columns
-                    dataframes.append(df)
+                    zip_file_path = os.path.join(coin_folder_path, file_name)
+                    with ZipFile(zip_file_path, 'r') as zip_file:
+                        csv_file_name = os.path.splitext(file_name)[0] + '.csv'
+                        with zip_file.open(csv_file_name) as csv_file:
+                            df = pd.read_csv(csv_file, usecols=[0, 1, 2, 3, 4, 5], names=expected_columns, header=None)#df = pd.read_csv(csv_file)
+                            #df = df.iloc[:, :6]  # Extracting the first six columns
+                            dataframes.append(df)
 
         # Concatenating all dataframes
-        df = pd.concat(dataframes)
-
+        df = pd.concat(dataframes, axis=0)
         # Renaming the columns
-        df.columns = ["timestamp", "open", "high", "low", "close", "volume"]
+        #df.columns = ["timestamp", "open", "high", "low", "close", "volume"]
 
         # Parsing timestamp as datetime
         df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
@@ -40,12 +44,7 @@ class BinanceDataset:
         df = df[["timestamp", "low", "high", "open", "close", "volume"]]
 
         # Renaming the columns
-        df.rename(columns={"timestamp": "Date"}, inplace=True)
-        df.rename(columns={"low": "Low"}, inplace=True)
-        df.rename(columns={"high": "High"}, inplace=True)
-        df.rename(columns={"open": "Open"}, inplace=True)
-        df.rename(columns={"close": "Close"}, inplace=True)
-        df.rename(columns={"volume": "Volume"}, inplace=True)
+        df.rename(columns={"timestamp": "Date", "low": "Low", "high": "High", "open": "Open", "close": "Close", "volume": "Volume"}, inplace=True)
         
         # Cleaning the data for any NaN or Null fields
         df = df.dropna()
@@ -77,23 +76,31 @@ class BinanceDataset:
         else:
             end_date = datetime.strptime(str(end_date), '%Y-%m-%d %H:%M:%S')
 
-        start_index = 0
-        end_index = df.shape[0] - 1
-        for i in range(df.shape[0]):
-            if df.Date[i] <= start_date:
-                start_index = i
+        # start_index = 0
+        # end_index = df.shape[0] - 1
+        # for i in range(df.shape[0]):
+        #     if df.Date[i] <= start_date:
+        #         start_index = i
 
-        for i in range(df.shape[0] - 1, -1, -1):
-            if df.Date[i] >= end_date:
-                end_index = i
+        # for i in range(df.shape[0] - 1, -1, -1):
+        #     if df.Date[i] >= end_date:
+        #         end_index = i
+
+        # Filtering based on date range using .loc
+        filtered_df = df.loc[(df["Date"] >= start_date) & (df["Date"] <= end_date)]
+
 
         # prediction mean based upon open
-        dates = df.Date[start_index:end_index]
-        df = df.drop('Date', axis=1)
-        arr = np.array(df)
-        arr = arr[start_index:end_index]
-        features = df.columns
-
+        # dates = df.Date[start_index:end_index]
+        # df = df.drop('Date', axis=1)
+        # arr = np.array(df)
+        # arr = arr[start_index:end_index]
+        # features = df.columns
+        dates = filtered_df["Date"]
+        filtered_df = filtered_df.drop("Date", axis=1)
+        arr = np.array(filtered_df)
+        features = filtered_df.columns
+        
         self.dataset, self.profit_calculator = create_dataset(arr, list(dates), look_back=window_size, features=features)
 
     def get_dataset(self):

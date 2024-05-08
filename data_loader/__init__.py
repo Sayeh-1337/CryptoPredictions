@@ -5,7 +5,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
-DATASETS = ['CoinMarket', 'Bitmex']
+DATASETS = ['CoinMarket', 'Bitmex', 'Binance']
 DATA_TYPES = ['train', 'validation', 'test']
 
 
