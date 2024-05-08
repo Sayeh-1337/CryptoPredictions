@@ -1,7 +1,7 @@
 # Import the model we are using
 from prophet import Prophet
 import numpy as np
-
+import pickle
 
 class MyProphet:
 
@@ -28,5 +28,10 @@ class MyProphet:
         test_x = test_x.reset_index().rename(columns={self.date_col: 'ds', self.response_col: 'y'})
         pred_y = self.model_fbp.predict(test_x)
         return pred_y.yhat
+    
+    def make_future_dataframe(self, periods):
+        return self.model_fbp.make_future_dataframe(periods=periods)
 
-
+    def save(self, path):
+        with open(path, 'wb') as f:
+            pickle.dump(self.model_fbp, f)

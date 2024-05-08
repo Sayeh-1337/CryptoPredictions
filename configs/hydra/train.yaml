@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - model: random_forest #orbit - random_forest - sarimax - lstm - gru - prophet
+  - model: prophet #orbit - random_forest - sarimax - lstm - gru - prophet
   - dataset_loader: Binance #Bitmex #Binance #CoinMarket
   - metrics
 

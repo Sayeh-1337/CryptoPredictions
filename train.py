@@ -9,6 +9,7 @@ from factory.trainer import Trainer
 from factory.evaluator import Evaluator
 from factory.profit_calculator import ProfitCalculator
 import pandas as pd
+import pickle
 
 from sklearn.model_selection import TimeSeriesSplit
 from path_definition import HYDRA_PATH
@@ -75,6 +76,15 @@ def train(cfg: DictConfig):
 
     reporter.print_pretty_metrics(logger)
     reporter.save_metrics()
+    
+    # Create the folder for saving the model
+    model_zoo_path = os.path.join(cfg.save_dir, 'model_zoo')
+    os.makedirs(model_zoo_path, exist_ok=True)
+    # # Save the model as a pickle file
+    # file_name = cfg.model.type  # Remove any special characters from the filename
+    # file_path = os.path.join(model_zoo_path, f"{file_name}_model.pkl")
+    # model.save(file_path)
+   
 
 
 if __name__ == '__main__':
