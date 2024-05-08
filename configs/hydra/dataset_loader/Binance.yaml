@@ -1,0 +1,33 @@
+defaults:
+  - _self_
+  - common
+
+name: 'Binance'
+dataset_path: ..\data\binance-data\data\spot\monthly\klines
+crypto_symbols: 
+  - "ETHUSDT" 
+  
+
+
+
+
+
+
+
+
+
+
+#List of all crypto_symbols under concern:
+#"ADAUSDT", 
+#"ALGOUSDT", 
+#"ARBUSDT", 
+#"AVAXUSDT", 
+#"BNBUSDT", 
+#"BTCUSDT", 
+#"DOGEUSDT", 
+#"ETHUSDT", 
+#"FILUSDT",
+#"LTCUSDT", 
+#"MATICUSDT", 
+#"SOLUSDT", 
+#"XLMUSDT"

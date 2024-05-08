@@ -1,12 +1,12 @@
 defaults:
   - _self_
   - model: random_forest #orbit - random_forest - sarimax - lstm - gru - prophet
-  - dataset_loader: CoinMarket #Bitmex
+  - dataset_loader: Binance #Bitmex #Binance #CoinMarket
   - metrics
 
 validation_method: simple #simple - cross_validation
 symbol: ETH
-load_path: C:\Users\samen\Desktop\term9\CryptoPredictions\data\ETHUSD-1d-data.csv
+load_path: #\CryptoPredictions\data\ETHUSD-1d-data.csv
 save_dir:
 dataset_path:
 

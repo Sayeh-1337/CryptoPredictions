@@ -90,6 +90,19 @@ for more information about Hydra and config files please visit [here](https://gi
 
 You can use more than 15 cryptocurrencies data by giving the symbol of the selected cryptocurrency to the config files. Moreover, the csv files of these cryptocurrencies could be found in ./data .
 
+or 
+
+you can use the Bitmex API to fetch the data. The data is fetched from the Bitmex API and stored in the ./data folder
+
+or 
+
+you can download Binance dataset using the script provided
+
+```bash
+./binance-historical-dataset-downloader.sh
+```
+for more info and dataset customization you can visit [here](https://github.com/Sayeh-1337/CryptoPredictions/blob/main/data_loader/binance_public_data_downloader/README.md)
+
 <div align="center">
 
 |  Name	     | Symbol |  Name	      | Symbol |  Name	 | Symbol |
