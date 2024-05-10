@@ -32,7 +32,7 @@ def forecast_token(symbol, interval='30m', periods=10, target_datetime=None):
     with st.spinner("Fetching data..."):
         # Fetch the data
         df = get_bars(symbol, interval)
-    
+    print (df.head())
     # Prepare the data for Prophet
     df['Mean'] = (df['Low'] + df['High']) / 2
     prophet_data = df.reset_index()[['Open time', 'Mean']].rename(columns={'Open time': 'ds', 'Mean': 'y'})
