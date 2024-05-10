@@ -2,42 +2,51 @@ import pandas as pd
 from prophet import Prophet
 import matplotlib.pyplot as plt
 import requests
+import aiohttp
+import asyncio
 import streamlit as st
 from datetime import datetime
 import plotly.graph_objects as go
 
-# Function to fetch and process Binance Klines data
-def get_bars(symbol, interval='30m'):
+# Function to fetch and process Binance Klines data asynchronously
+async def get_bars(symbol, interval='30m'):
     root_url = 'https://api.binance.com/api/v3/klines'
     url = f"{root_url}?symbol={symbol}&interval={interval}"
-    response = requests.get(url)
-    
-    if response.ok:
-        data = response.json()
-        df = pd.DataFrame(
-            data,
-            columns=[
-                'Open time', 'Open', 'High', 'Low', 'Close', 'Volume',
-                'Close time', 'Quote asset volume', 'Number of trades',
-                'Taker buy base asset volume', 'Taker buy quote asset volume',
-                'Ignore'
-            ]
-        )
-        df['Open time'] = pd.to_datetime(df['Open time'], unit='ms')
-        df.set_index('Open time', inplace=True)
-        df[['Open', 'High', 'Low', 'Close', 'Volume']] = df[['Open', 'High', 'Low', 'Close', 'Volume']].astype(float)
-        return df
-    else:
-        st.error("Error fetching data from the API")
-        return None
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status == 200:
+                data = await response.json()
+                df = pd.DataFrame(
+                    data,
+                    columns=[
+                        'Open time', 'Open', 'High', 'Low', 'Close', 'Volume',
+                        'Close time', 'Quote asset volume', 'Number of trades',
+                        'Taker buy base asset volume', 'Taker buy quote asset volume',
+                        'Ignore'
+                    ]
+                )
+                df['Open time'] = pd.to_datetime(df['Open time'], unit='ms')
+                df.set_index('Open time', inplace=True)
+                df[['Open', 'High', 'Low', 'Close', 'Volume']] = df[['Open', 'High', 'Low', 'Close', 'Volume']].astype(float)
+                return df
+            else:
+                st.error("Error fetching data from the API")
+                return None
 
 # Function to fit a Prophet model and forecast future mean prices
 def forecast_token(symbol, interval='30m', periods=10, target_datetime=None):
     # Fetch the data
      # Create a spinner while waiting for data retrieval
-    with st.spinner("Fetching data..."):
-        # Fetch the data
-        df = get_bars(symbol, interval)
+    # Fetch the data asynchronously
+    async def fetch_data():
+        return await get_bars(symbol, interval)
+
+    # Create an event loop and make the asynchronous request
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    with st.spinner("Fetching data..."): 
+     df = loop.run_until_complete(fetch_data())
+    loop.close()
     # If data is successfully fetched, proceed with forecasting
     if df is not None:
         # Prepare the data for Prophet
