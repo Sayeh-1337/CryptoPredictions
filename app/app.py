@@ -28,12 +28,16 @@ def get_bars(symbol, interval='30m'):
 # Function to fit a Prophet model and forecast future mean prices
 def forecast_token(symbol, interval='30m', periods=10, target_datetime=None):
     # Fetch the data
-    df = get_bars(symbol, interval)
+     # Create a spinner while waiting for data retrieval
+    with st.spinner("Fetching data..."):
+        # Fetch the data
+        df = get_bars(symbol, interval)
     
     # Prepare the data for Prophet
     df['Mean'] = (df['Low'] + df['High']) / 2
     prophet_data = df.reset_index()[['Open time', 'Mean']].rename(columns={'Open time': 'ds', 'Mean': 'y'})
     prophet_data.dropna()
+    
     # Create and fit the Prophet model
     model = Prophet()
     model.fit(prophet_data)
