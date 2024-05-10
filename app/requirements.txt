@@ -3,4 +3,4 @@ prophet
 pandas 
 matplotlib 
 requests
-ploty
+plotly
