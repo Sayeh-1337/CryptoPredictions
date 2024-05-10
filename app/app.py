@@ -130,30 +130,36 @@ def forecast_token(symbol, interval='30m', periods=10, target_datetime=None):
     else:
         st.write("No prediction available for the specified datetime.")
 
-# List of tokens to forecast
-tokens = [
-    "ADAUSDT", "ALGOUSDT", "ARBUSDT", "AVAXUSDT", "BNBUSDT",
-    "BTCUSDT", "DOGEUSDT", "ETHUSDT", "FILUSDT",
-    "LTCUSDT", "MATICUSDT", "SOLUSDT", "XLMUSDT"
-]
 
-# Streamlit Sidebar
-st.sidebar.title("Cryptocurrency Forecast")
-selected_token = st.sidebar.selectbox("Select a Token", tokens)
+# Streamlit App
+def main():
+    # List of tokens to forecast
+    tokens = [
+        "ADAUSDT", "ALGOUSDT", "ARBUSDT", "AVAXUSDT", "BNBUSDT",
+        "BTCUSDT", "DOGEUSDT", "ETHUSDT", "FILUSDT",
+        "LTCUSDT", "MATICUSDT", "SOLUSDT", "XLMUSDT"
+    ]
 
-# # Date selection
-# target_date = st.sidebar.date_input("Select Prediction Date", value=pd.to_datetime("today"))
-# # Time selection
-# target_time = st.sidebar.time_input("Select Prediction Time", value=pd.to_datetime("now").time())
-# Date and time selection
-target_date = st.sidebar.date_input("Select Prediction Date")
-target_time = st.sidebar.time_input("Select Prediction Time")
+    # Streamlit Sidebar
+    st.sidebar.title("Cryptocurrency Forecast")
+    selected_token = st.sidebar.selectbox("Select a Token", tokens)
+
+    # # Date selection
+    # target_date = st.sidebar.date_input("Select Prediction Date", value=pd.to_datetime("today"))
+    # # Time selection
+    # target_time = st.sidebar.time_input("Select Prediction Time", value=pd.to_datetime("now").time())
+    # Date and time selection
+    target_date = st.sidebar.date_input("Select Prediction Date")
+    target_time = st.sidebar.time_input("Select Prediction Time")
 
 
-# Combine date and time into a single datetime object
-target_datetime = datetime.combine(target_date, target_time)
+    # Combine date and time into a single datetime object
+    target_datetime = datetime.combine(target_date, target_time)
 
-# Main Content
-st.title("Cryptocurrency Price Forecast using Prophet")
-st.write(f"### Forecast for {selected_token}")
-forecast_token(selected_token, target_datetime=target_datetime)
+    # Main Content
+    st.title("Cryptocurrency Price Forecast using Prophet")
+    st.write(f"### Forecast for {selected_token}")
+    forecast_token(selected_token, target_datetime=target_datetime)
+
+if __name__ == "__main__":
+    main()
